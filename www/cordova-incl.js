@@ -28,8 +28,7 @@ var PLAT;
         blackberry10: /(BB10)/,
         blackberry: /(PlayBook)|(BlackBerry)/,
         windows8: /MSAppHost/,
-        windowsphone: /Windows Phone/,
-        firefoxos: /Firefox/
+        windowsphone: /Windows Phone/
     };
     for (var key in platforms) {
         if (platforms[key].exec(navigator.userAgent)) {
@@ -41,9 +40,6 @@ var PLAT;
 
 var scripts = document.getElementsByTagName('script');
 var currentPath = scripts[scripts.length - 1].src;
-if (PLAT !== "blackberry10" && PLAT !== "firefoxos") {
-    currentPath += '?paramShouldBeIgnored';
-}
 var cordovaPath = currentPath.replace("cordova-incl.js", "cordova.js");
 
 if (!window._doNotWriteCordovaScript) {

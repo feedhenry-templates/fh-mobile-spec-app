@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="org.apache.mobilespec" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
 <!--
   Licensed to the Apache Software Foundation (ASF) under one
   or more contributor license agreements.  See the NOTICE file
@@ -18,6 +17,7 @@
   specific language governing permissions and limitations
   under the License.
 -->
+<widget id="org.apache.mobilespec" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>mobilespec</name>
     <author>Apache Cordova</author>
     <description>
@@ -29,9 +29,5 @@
     <access origin="http://*.apache.org" />
     <access origin="https://*.apache.org" />
     <access origin="http://www.google.com" />
-    <access origin="http://techslides.com" />
     <access origin="httpssss://example.com" />
-
-    <preference name="iosPersistentFileLocation" value="Library" />
-    <preference name="AndroidPersistentFileLocation" value="Internal" />
 </widget>

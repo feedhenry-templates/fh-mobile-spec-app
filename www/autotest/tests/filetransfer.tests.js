@@ -110,25 +110,14 @@ describe('FileTransfer', function() {
 
         it("filetransfer.spec.4 should be able to download a file using http", function() {
             var fail = createDoNotCallSpy('downloadFail');
-            var fileFail = createDoNotCallSpy('downloadFail');
             var remoteFile = server + "/robots.txt"
             var localFileName = remoteFile.substring(remoteFile.lastIndexOf('/')+1);
             var lastProgressEvent = null;
 
-            var fileWin = jasmine.createSpy().andCallFake(function(blob) {
-                expect(lastProgressEvent.loaded).not.toBeGreaterThan(blob.size);
-            });
-
-            var downloadWin = function(entry) {
+            var downloadWin = jasmine.createSpy().andCallFake(function(entry) {
                 expect(entry.name).toBe(localFileName);
                 expect(lastProgressEvent.loaded).toBeGreaterThan(1);
-                if (lastProgressEvent.lengthComputable) {
-                    expect(lastProgressEvent.total).not.toBeLessThan(lastProgressEvent.loaded);
-                } else {
-                    expect(lastProgressEvent.total).toBe(0);
-                }
-                entry.file(fileWin, fileFail);
-            };
+            });
 
             this.after(function() {
                 deleteFile(localFileName);
@@ -138,10 +127,10 @@ describe('FileTransfer', function() {
                 ft.onprogress = function(e) {
                     lastProgressEvent = e;
                 };
-                ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, fail);
+                ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, fail);
             });
 
-            waitsForAny(fileWin, fail, fileFail);
+            waitsForAny(downloadWin, fail);
         });
         it("filetransfer.spec.5 should be able to download a file using http basic auth", function() {
             var fail = createDoNotCallSpy('downloadFail');
@@ -152,11 +141,6 @@ describe('FileTransfer', function() {
             var downloadWin = jasmine.createSpy().andCallFake(function(entry) {
                 expect(entry.name).toBe(localFileName);
                 expect(lastProgressEvent.loaded).toBeGreaterThan(1);
-                if (lastProgressEvent.lengthComputable) {
-                    expect(lastProgressEvent.total).not.toBeLessThan(lastProgressEvent.loaded);
-                } else {
-                    expect(lastProgressEvent.total).toBe(0);
-                }
             });
 
             this.after(function() {
@@ -167,7 +151,7 @@ describe('FileTransfer', function() {
                 ft.onprogress = function(e) {
                     lastProgressEvent = e;
                 };
-                ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, fail);
+                ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, fail);
             });
 
             waitsForAny(downloadWin, fail);
@@ -187,7 +171,7 @@ describe('FileTransfer', function() {
             });
             runs(function() {
                 var ft = new FileTransfer();
-                ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, downloadFail);
+                ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, downloadFail);
             });
 
             waitsForAny(downloadWin, downloadFail);
@@ -206,11 +190,6 @@ describe('FileTransfer', function() {
             var downloadWin = jasmine.createSpy().andCallFake(function(entry) {
                 expect(entry.name).toBe(localFileName);
                 expect(lastProgressEvent.loaded).toBeGreaterThan(1);
-                if (lastProgressEvent.lengthComputable) {
-                    expect(lastProgressEvent.total).not.toBeLessThan(lastProgressEvent.loaded);
-                } else {
-                    expect(lastProgressEvent.total).toBe(0);
-                }
             });
 
             this.after(function() {
@@ -221,7 +200,7 @@ describe('FileTransfer', function() {
             ft.onprogress = function(e) {
                 lastProgressEvent = e;
             };
-            ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, fail);
+            ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, fail);
 
             waitsForAny(downloadWin, fail);
         });
@@ -230,24 +209,21 @@ describe('FileTransfer', function() {
             var localFileName = 'httpstest.html';
             var downloadFail = createDoNotCallSpy('downloadFail', 'Ensure ' + remoteFile + ' is in the white-list');
             var fileFail = createDoNotCallSpy('fileFail');
-            var lastProgressEvent = null;
             var downloadWin = function(entry) {
                 readFileEntry(entry, fileWin, fileFail);
             };
             var fileWin = jasmine.createSpy().andCallFake(function(content) {
-                expect(content).toMatch(/The Apache Software Foundation/);
-                expect(lastProgressEvent.loaded).not.toBeGreaterThan(content.length);
+                expect(content).toMatch(/The Apache Software Foundation/); 
             });
 
             this.after(function() {
                 deleteFile(localFileName);
             });
-
-            var ft = new FileTransfer();
-            ft.onprogress = function(e) {
-                lastProgressEvent = e;
-            };
-            ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, downloadFail);
+            runs(function() {
+                var ft = new FileTransfer();
+                console.log("8");
+                ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, downloadFail);
+            });
 
             waitsForAny(fileWin, downloadFail, fileFail);
         });
@@ -272,7 +248,7 @@ describe('FileTransfer', function() {
                         ft.abort();
                     }
                 };
-                ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, downloadFail);
+                ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, downloadFail);
             });
 
             waitsForAny(downloadWin, downloadFail);
@@ -294,7 +270,7 @@ describe('FileTransfer', function() {
             runs(function() {
                 var ft = new FileTransfer();
                 ft.abort(); // should be a no-op.
-                ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, downloadFail);
+                ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, downloadFail);
                 ft.abort();
                 ft.abort(); // should be a no-op.
             });
@@ -314,7 +290,7 @@ describe('FileTransfer', function() {
             runs(function() {
                 var ft = new FileTransfer();
                 ft.abort(); // should be a no-op.
-                ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, downloadFail);
+                ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, downloadFail);
                 ft.abort();
                 ft.abort(); // should be a no-op.
             });
@@ -336,7 +312,7 @@ describe('FileTransfer', function() {
             });
             runs(function() {
                 var ft = new FileTransfer();
-                ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, downloadFail);
+                ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, downloadFail);
             });
 
             waitsForAny(downloadWin, downloadFail);
@@ -356,7 +332,7 @@ describe('FileTransfer', function() {
             });
             runs(function() {
                 var ft = new FileTransfer();
-                ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, downloadFail);
+                ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, downloadFail);
             });
 
             waitsForAny(downloadWin, downloadFail);
@@ -379,7 +355,7 @@ describe('FileTransfer', function() {
             });
             runs(function() {
                 var ft = new FileTransfer();
-                ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, downloadFail);
+                ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, downloadFail);
             });
 
             waitsForAny(downloadWin, downloadFail);
@@ -395,7 +371,7 @@ describe('FileTransfer', function() {
 
             runs(function() {
                 var ft = new FileTransfer();
-                ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, downloadFail);
+                ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, downloadFail);
             });
 
             waitsForAny(downloadWin, downloadFail);
@@ -435,7 +411,7 @@ describe('FileTransfer', function() {
                ft.onprogress = function(e) {
                    lastProgressEvent = e;
                };
-               ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, downloadFail);
+               ft.download(remoteFile, root.fullPath + "/" + localFileName, downloadWin, downloadFail);
            });
            waitsForAny(downloadWin, downloadFail);
         });
@@ -454,10 +430,6 @@ describe('FileTransfer', function() {
                 expect(uploadResult.bytesSent).toBeGreaterThan(0);
                 expect(uploadResult.responseCode).toBe(200);
                 expect(uploadResult.response).toMatch(/fields:\s*{\s*value1.*/);
-                expect(lastProgressEvent).not.toBeNull('expected progress events');
-                if (cordova.platformId == 'ios') {
-                    expect(uploadResult.headers && uploadResult.headers['Content-Type']).toBeDefined('Expected content-type header to be defined.');
-                }
             });
 
             var fileWin = function(fileEntry) {
@@ -474,15 +446,14 @@ describe('FileTransfer', function() {
                 options.params = params;
 
                 ft.onprogress = function(e) {
-                    lastProgressEvent = e;
                     expect(e.lengthComputable).toBe(true);
                     expect(e.total).toBeGreaterThan(0);
                     expect(e.loaded).toBeGreaterThan(0);
-                    expect(lastProgressEvent.total).not.toBeLessThan(lastProgressEvent.loaded);
+                    lastProgressEvent = e;
                 };
 
                 // removing options cause Android to timeout
-                ft.upload(fileEntry.toURL(), remoteFile, uploadWin, uploadFail, options);
+                ft.upload(fileEntry.fullPath, remoteFile, uploadWin, uploadFail, options);
             };
 
             this.after(function() {
@@ -493,6 +464,9 @@ describe('FileTransfer', function() {
             });
 
             waitsForAny(uploadWin, uploadFail, fileFail);
+            runs(function() {
+                expect(lastProgressEvent).not.toBeNull('expected progress events');
+            });
         });
         it("filetransfer.spec.19 should be able to upload a file with http basic auth", function() {
             var remoteFile = server_with_credentials + "/upload_basic_auth";
@@ -530,7 +504,7 @@ describe('FileTransfer', function() {
                 };
 
                 // removing options cause Android to timeout
-                ft.upload(fileEntry.toURL(), remoteFile, uploadWin, uploadFail, options);
+                ft.upload(fileEntry.fullPath, remoteFile, uploadWin, uploadFail, options);
             };
 
             this.after(function() {
@@ -543,8 +517,6 @@ describe('FileTransfer', function() {
             waitsForAny(uploadWin, uploadFail, fileFail);
             runs(function() {
                 expect(lastProgressEvent).not.toBeNull('expected progress events');
-                expect(lastProgressEvent.loaded).toBeGreaterThan(1, 'loaded');
-                expect(lastProgressEvent.total).not.toBeLessThan(lastProgressEvent.loaded);
             });
         });
         it("filetransfer.spec.6 should get http status on basic auth failure", function() {
@@ -566,7 +538,7 @@ describe('FileTransfer', function() {
                 options.fileName=fileEntry.name;
                 options.mimeType="text/plain";
 
-                ft.upload(fileEntry.toURL(), remoteFile, uploadWin, uploadFail, options);
+                ft.upload(fileEntry.fullPath, remoteFile, uploadWin, uploadFail, options);
             };
 
             this.after(function() {
@@ -602,7 +574,7 @@ describe('FileTransfer', function() {
                 startTime = +new Date();
                 // removing options cause Android to timeout
                 ft.abort(); // should be a no-op.
-                ft.upload(fileEntry.toURL(), remoteFile, uploadWin, uploadFail, options);
+                ft.upload(fileEntry.fullPath, remoteFile, uploadWin, uploadFail, options);
                 ft.abort();
                 ft.abort(); // should be a no-op.
             };
@@ -635,7 +607,7 @@ describe('FileTransfer', function() {
                 options.fileName=fileEntry.name;
                 options.mimeType="text/plain";
 
-                ft.upload(fileEntry.toURL(), remoteFile, uploadWin, uploadFail, options);
+                ft.upload(fileEntry.fullPath, remoteFile, uploadWin, uploadFail, options);
             };
 
             this.after(function() {
@@ -659,7 +631,7 @@ describe('FileTransfer', function() {
             });
             var fileWin = function(fileEntry) {
                 var ft = new FileTransfer();
-                ft.upload(fileEntry.toURL(), remoteFile, uploadWin, uploadFail, {});
+                ft.upload(fileEntry.fullPath, remoteFile, uploadWin, uploadFail, {});
             };
 
             this.after(function() {
@@ -683,7 +655,7 @@ describe('FileTransfer', function() {
             });
             var fileWin = function(fileEntry) {
                 var ft = new FileTransfer();
-                ft.upload(fileEntry.toURL(), remoteFile, uploadWin, uploadFail, {});
+                ft.upload(fileEntry.fullPath, remoteFile, uploadWin, uploadFail, {});
             };
 
             this.after(function() {
@@ -708,7 +680,7 @@ describe('FileTransfer', function() {
 
             runs(function() {
                 var ft = new FileTransfer();
-                ft.upload(root.toURL() + "/" + localFileName, remoteFile, uploadWin, uploadFail);
+                ft.upload(root.fullPath + "/" + localFileName, remoteFile, uploadWin, uploadFail);
             });
 
             waitsForAny(uploadWin, uploadFail);
@@ -763,7 +735,7 @@ describe('FileTransfer', function() {
                 };
 
                 // removing options cause Android to timeout
-                ft.upload(fileEntry.toURL(), remoteFile, uploadWin, uploadFail, options);
+                ft.upload(fileEntry.fullPath, remoteFile, uploadWin, uploadFail, options);
             };
 
             this.after(function() {
@@ -774,142 +746,6 @@ describe('FileTransfer', function() {
             });
 
             waitsForAny(uploadWin, uploadFail);
-        });
-    });
-    describe('Backwards compatibility', function() {
-        /* These specs exist to test that the previously supported API still works with
-         * the new version of file-transfer.
-         * They rely on an undocumented interface to File which provides absolute file
-         * paths, which are not used internally anymore.
-         * If that interface is not present, then these tests will silently succeed.
-         */
-        it("filetransfer.spec.28 should be able to download a file using local paths", function() {
-            var fail = createDoNotCallSpy('downloadFail');
-            var remoteFile = server + "/robots.txt"
-            var localFileName = remoteFile.substring(remoteFile.lastIndexOf('/')+1);
-            var localURL = root.toURL() + "/" + localFileName;
-            var lastProgressEvent = null;
-
-            var downloadWin = jasmine.createSpy().andCallFake(function(entry) {
-                expect(entry.name).toBe(localFileName);
-                expect(lastProgressEvent.loaded).toBeGreaterThan(1);
-            });
-            var unsupportedOperation = jasmine.createSpy("Operation not supported");
-
-            this.after(function() {
-                deleteFile(localFileName);
-            });
-            runs(function() {
-                /* This is an undocumented interface to File which exists only for testing
-                 * backwards compatibilty. By obtaining the raw filesystem path of the download
-                 * location, we can pass that to ft.download() to make sure that previously-stored
-                 * paths are still valid.
-                 */
-                cordova.exec(function(localPath) {
-                    var ft = new FileTransfer();
-                    ft.onprogress = function(e) {
-                        lastProgressEvent = e;
-                        if (lastProgressEvent.lengthComputable) {
-                            expect(lastProgressEvent.total).not.toBeLessThan(lastProgressEvent.loaded);
-                        } else {
-                            expect(lastProgressEvent.total).toBe(0);
-                        }
-                    };
-                    ft.download(remoteFile, localPath, downloadWin, fail);
-                }, unsupportedOperation, 'File', '_getLocalFilesystemPath', [localURL]);
-            });
-
-            waitsForAny(downloadWin, fail, unsupportedOperation);
-        });
-        it("filetransfer.spec.29 should be able to upload a file using local paths", function() {
-            var remoteFile = server + "/upload";
-            var localFileName = "upload.txt";
-            var fileContents = 'This file should upload';
-
-            var fileFail = createDoNotCallSpy('fileFail');
-            var uploadFail = createDoNotCallSpy('uploadFail', "Ensure " + remoteFile + " is in the white list");
-            var unsupportedOperation = jasmine.createSpy("Operation not supported");
-            var lastProgressEvent = null;
-
-            var uploadWin = jasmine.createSpy().andCallFake(function(uploadResult) {
-                expect(uploadResult.bytesSent).toBeGreaterThan(0);
-                expect(uploadResult.responseCode).toBe(200);
-                expect(uploadResult.response).toMatch(/fields:\s*{\s*value1.*/);
-            });
-
-            var fileWin = function(fileEntry) {
-                ft = new FileTransfer();
-
-                var options = new FileUploadOptions();
-                options.fileKey = "file";
-                options.fileName = localFileName;
-                options.mimeType = "text/plain";
-
-                var params = new Object();
-                params.value1 = "test";
-                params.value2 = "param";
-                options.params = params;
-
-                ft.onprogress = function(e) {
-                    expect(e.lengthComputable).toBe(true);
-                    expect(e.total).toBeGreaterThan(0);
-                    expect(e.loaded).toBeGreaterThan(0);
-                    lastProgressEvent = e;
-                };
-
-                // removing options cause Android to timeout
-
-                /* This is an undocumented interface to File which exists only for testing
-                 * backwards compatibilty. By obtaining the raw filesystem path of the download
-                 * location, we can pass that to ft.download() to make sure that previously-stored
-                 * paths are still valid.
-                 */
-                cordova.exec(function(localPath) {
-                    ft.upload(localPath, remoteFile, uploadWin, uploadFail, options);
-                }, unsupportedOperation, 'File', '_getLocalFilesystemPath', [fileEntry.toURL()]);
-
-            };
-
-            this.after(function() {
-                deleteFile(localFileName);
-            });
-            runs(function() {
-                writeFile(localFileName, fileContents, fileWin, fileFail);
-            });
-
-            waitsForAny(uploadWin, uploadFail, fileFail, unsupportedOperation);
-            runs(function() {
-                if (!unsupportedOperation.wasCalled) {
-                    expect(lastProgressEvent).not.toBeNull('expected progress events');
-                    expect(lastProgressEvent.loaded).toBeGreaterThan(1);
-                    expect(lastProgressEvent.total).not.toBeLessThan(lastProgressEvent.loaded);
-                }
-            });
-        });
-    });
-    describe('native URL interface', function() {
-        it("filetransfer.spec.30 downloaded file entries should have a toNativeURL method", function() {
-            var fail = createDoNotCallSpy('downloadFail');
-            var remoteFile = server + "/robots.txt";
-            var localFileName = remoteFile.substring(remoteFile.lastIndexOf('/')+1)+".spec30";
-
-            var downloadWin = jasmine.createSpy().andCallFake(function(entry) {
-                expect(entry.toNativeURL).toBeDefined();
-                expect(typeof entry.toNativeURL).toBe("function");
-                var nativeURL = entry.toNativeURL();
-                expect(typeof nativeURL).toBe("string");
-                expect(nativeURL.substring(0,7)).toBe('file://');
-            });
-
-            this.after(function() {
-                deleteFile(localFileName);
-            });
-            runs(function() {
-                var ft = new FileTransfer();
-                ft.download(remoteFile, root.toURL() + "/" + localFileName, downloadWin, fail);
-            });
-
-            waitsForAny(downloadWin, fail);
         });
     });
 });
