@@ -60,3 +60,8 @@ function backHome() {
         window.history.go(-1);
     }
 }
+
+window.$fh = window.$fh || {};
+window.$fh.__dest__ = window.$fh.__dest__ || {};
+window.$fh._readyCallbacks = window.$fh._readyCallbacks || [];
+
