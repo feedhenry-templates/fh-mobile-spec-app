@@ -429,7 +429,7 @@ describe('FileTransfer', function() {
             var uploadWin = jasmine.createSpy().andCallFake(function(uploadResult) {
                 expect(uploadResult.bytesSent).toBeGreaterThan(0);
                 expect(uploadResult.responseCode).toBe(200);
-                //expect(uploadResult.response).toMatch(/"fields":\s*{\s*"value1".*/);
+                expect(uploadResult.response).toMatch(/"fields":\s*{\s*"value1".*/);
             });
 
             var fileWin = function(fileEntry) {
@@ -480,7 +480,7 @@ describe('FileTransfer', function() {
             var uploadWin = jasmine.createSpy().andCallFake(function(uploadResult) {
                 expect(uploadResult.bytesSent).toBeGreaterThan(0);
                 expect(uploadResult.responseCode).toBe(200);
-                //expect(uploadResult.response).toMatch(/"fields":\s*{\s*"value1".*/);
+                expect(uploadResult.response).toMatch(/"fields":\s*{\s*"value1".*/);
             });
 
             var fileWin = function(fileEntry) {
