@@ -14,7 +14,7 @@ jasmine.FHReporter = function(){
     };
   })();
 
-  self.reporterId = guid();
+  var reporterId = guid();
 
   var reportsCache = [];
   var limit = 10;
@@ -24,7 +24,7 @@ jasmine.FHReporter = function(){
     if(reportsCache.length === limit){
       var dataToSend = reportsCache.splice(0, limit);
       var reqData = {};
-      repData.id = self.reporterId;
+      reqData.reporterId = reporterId;
       reqData.deviceInfo = window.device || {};
       reqData.testInfo = dataToSend;
       fh.cloud({
@@ -69,7 +69,7 @@ jasmine.FHReporter = function(){
 
   self.reportSuiteResults = function(suite){
     var suiteId = suite.id;
-    var fullName = suite.fullName();
+    var fullName = suite.getFullName();
     var results = suite.results();
     var passed = results.passed();
     var totalCount = results.totalCount;

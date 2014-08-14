@@ -68,15 +68,6 @@
 
   <script type="text/javascript">
       var root, temp_root, persistent_root, fhready;
-      if(window.$fh){
-        window.$fh.on('fhinit', function(err, cloud){
-          if(err){
-            fhready = false;
-          } else {
-            fhready = true;
-          }
-        });
-      }
 
       document.addEventListener('deviceready', function () {
           // one-time retrieval of the root file system entry
@@ -85,39 +76,55 @@
               console.log(JSON.stringify(e));
           };
 
+          var startRunTest = function(){
+            // Once root is set up, fire off tests
+            var jasmineEnv = jasmine.getEnv();
+            jasmineEnv.updateInterval = 1000;
+
+            var htmlReporter = new jasmine.HtmlReporter();
+            jasmineEnv.addReporter(htmlReporter);
+
+            // the following will only be defined if the Medic plugin is loaded
+            if('medic' in window) {
+                if( medic.isEnabled() ) {
+                    jasmineEnv.addReporter(medic.getJSReporter());
+                }
+            }
+
+            if(window.$fh && fhready){
+              jasmineEnv.addReporter(new jasmine.FHReporter());
+            }
+            
+            jasmineEnv.specFilter = function(spec) {
+              return htmlReporter.specFilter(spec);
+            };
+
+            jasmineEnv.execute();
+          }
+
           window.requestFileSystem(LocalFileSystem.PERSISTENT, 0,
               function(fileSystem) {
                   console.log('File API test Init: Setting PERSISTENT FS.');
                   root = fileSystem.root; // set in file.tests.js
                   persistent_root = root;
 
-                  // Once root is set up, fire off tests
-                  var jasmineEnv = jasmine.getEnv();
-                  jasmineEnv.updateInterval = 1000;
-
-                  var htmlReporter = new jasmine.HtmlReporter();
-                  jasmineEnv.addReporter(htmlReporter);
-
-                  // the following will only be defined if the Medic plugin is loaded
-                  if('medic' in window) {
-                      if( medic.isEnabled() ) {
-                          jasmineEnv.addReporter(medic.getJSReporter());
-                      }
-                  }
-
                   if(window.$fh){
-                    if(fhready){
-                      jasmineEnv.addReporter(new jasmine.FHReporter());
-                    } else {
-                      alert('FH JS SDK is not ready. Something is not right.');
-                    }
+                    window.$fh.on('fhinit', function(err, cloud){
+                      if(err){
+                        alert('FH Init failed. Something is not right.');
+                      } else {
+                        fhready = true;
+                        startRunTest();
+                      }
+                    });
+                    setTimeout(function(){
+                      if(!fhready){
+                        alert('FH failed to init in 5 seconds. Something is wrong..');
+                      }
+                    }, 5000);
+                  } else {
+                    startRunTest();
                   }
-                  
-                  jasmineEnv.specFilter = function(spec) {
-                    return htmlReporter.specFilter(spec);
-                  };
-
-                  jasmineEnv.execute();
               }, onError);
           window.requestFileSystem(LocalFileSystem.TEMPORARY, 0,
               function(fileSystem) {
