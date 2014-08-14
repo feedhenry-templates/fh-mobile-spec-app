@@ -41,10 +41,12 @@ var PLAT;
 var scripts = document.getElementsByTagName('script');
 var currentPath = scripts[scripts.length - 1].src;
 var cordovaPath = currentPath.replace("cordova-incl.js", "cordova.js");
+var fhjs = currentPath.replace("cordova-incl.js", "feedhenry.js");
 
 if (!window._doNotWriteCordovaScript) {
     if (PLAT != "windows8") {
         document.write('<script type="text/javascript" charset="utf-8" src="' + cordovaPath + '"></script>');
+        document.write('<script type="text/javascript" charset="utf-8" src="' + fhjs + '"></script>');
     } else {
         var s = document.createElement('script');
         s.src = cordovaPath;
