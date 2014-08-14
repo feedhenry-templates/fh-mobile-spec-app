@@ -20,6 +20,7 @@ jasmine.FHReporter = function(){
   var limit = 10;
 
   function sendReport(testData){
+    testData.ts = new Date().getTime();
     reportsCache.push(testData);
     if(reportsCache.length === limit){
       var dataToSend = reportsCache.splice(0, limit);
