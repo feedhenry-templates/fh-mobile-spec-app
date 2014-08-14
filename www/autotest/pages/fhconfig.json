@@ -1,7 +1,8 @@
 {
   "appid": "7adVHpIYDm7emRkPrEP3ycA3",
   "appkey": "d9cfe042c234b044ad7dd872360aa7050110df4e",
-  "connectiontag": "0.0.49",
+  "apptitle": "MobileSpec",
+  "connectiontag": "0.0.57",
   "host": "https://testing.beta.feedhenry.com",
   "projectid": "7adVHwoFqlb6MnXhNil9tw3f"
 }
