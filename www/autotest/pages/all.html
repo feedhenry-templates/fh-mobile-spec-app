@@ -37,6 +37,8 @@
   <script type="text/javascript" src="../html/SuiteView.js"></script>
   <script type="text/javascript" src="../html/TrivialReporter.js"></script>
 
+  <script type="text/javascript" src="../html/FHReporter.js"></script>
+
   <!-- Source -->
   <script type="text/javascript" src="../../cordova-incl.js"></script>
 
@@ -65,7 +67,16 @@
   <script type="text/javascript" src="../tests/localXHR.tests.js"></script>
 
   <script type="text/javascript">
-      var root, temp_root, persistent_root;
+      var root, temp_root, persistent_root, fhready;
+      if(window.$fh){
+        window.$fh.on('fhinit', function(err, cloud){
+          if(err){
+            fhready = false;
+          } else {
+            fhready = true;
+          }
+        });
+      }
 
       document.addEventListener('deviceready', function () {
           // one-time retrieval of the root file system entry
@@ -94,6 +105,14 @@
                       }
                   }
 
+                  if(window.$fh){
+                    if(fhready){
+                      jasmineEnv.addReporter(new jasmine.FHReporter());
+                    } else {
+                      alert('FH JS SDK is not ready. Something is not right.');
+                    }
+                  }
+                  
                   jasmineEnv.specFilter = function(spec) {
                     return htmlReporter.specFilter(spec);
                   };
