@@ -18,9 +18,14 @@ jasmine.FHReporter = function(){
 
   var reportsCache = [];
   var limit = 10;
+  var totalSpecs, specCounter;
 
   function sendReport(testData){
     testData.ts = new Date().getTime();
+    testData.progress = {
+      total: totalSpecs,
+      run: specCounter
+    };
     reportsCache.push(testData);
     if(reportsCache.length === limit){
       var dataToSend = reportsCache.splice(0, limit);
@@ -54,11 +59,9 @@ jasmine.FHReporter = function(){
 
   self.reportRunnerStarting = function(runner){
     var specs = runner.specs() || [];
+    totalSpecs = specs.length;
     sendReport({
-      stage: 'runner_starting',
-      data: {
-        'total_specs': specs.length
-      }
+      stage: 'runner_starting'
     });
   };
 
@@ -103,7 +106,7 @@ jasmine.FHReporter = function(){
   };
 
   self.reportSpecStarting = function(spec){
-
+    specCounter++;
   };
 
   self.reportSpecResults = function(spec){
