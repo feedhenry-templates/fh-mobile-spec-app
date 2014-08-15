@@ -18,7 +18,8 @@ jasmine.FHReporter = function(){
 
   var reportsCache = [];
   var limit = 10;
-  var totalSpecs, specCounter;
+  var totalSpecs;
+  var specCounter=0;
 
   function sendReport(testData, force){
     testData.ts = new Date().getTime();
