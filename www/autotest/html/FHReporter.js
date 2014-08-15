@@ -20,14 +20,14 @@ jasmine.FHReporter = function(){
   var limit = 10;
   var totalSpecs, specCounter;
 
-  function sendReport(testData){
+  function sendReport(testData, force){
     testData.ts = new Date().getTime();
     testData.progress = {
       total: totalSpecs,
       run: specCounter
     };
     reportsCache.push(testData);
-    if(reportsCache.length === limit){
+    if(reportsCache.length === limit || force){
       var dataToSend = reportsCache.splice(0, limit);
       var reqData = {};
       reqData.reporterId = reporterId;
@@ -79,7 +79,7 @@ jasmine.FHReporter = function(){
         'failedCount': failedCount,
         'passed': passed
       }
-    });
+    }, true);
   };
 
   self.reportSuiteResults = function(suite){
