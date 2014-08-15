@@ -63,8 +63,19 @@ jasmine.FHReporter = function(){
   };
 
   self.reportRunnerResults = function(runner){
+    var results = suite.results();
+    var passed = results.passed();
+    var totalCount = results.totalCount;
+    var passedCount = results.passedCount;
+    var failedCount = results.failedCount;
     sendReport({
-      stage: 'complete'
+      stage: 'complete',
+      data: {
+        'total': totalCount,
+        'passedCount': passedCount,
+        'failedCount': failedCount,
+        'passed': passed
+      }
     });
   };
 
@@ -92,47 +103,43 @@ jasmine.FHReporter = function(){
   };
 
   self.reportSpecStarting = function(spec){
-    sendReport({
-      stage: 'spec_start',
-      data: {
-        suiteDesc: spec.suite.description,
-        specDesc: spec.description
-      }
-    });
+
   };
 
   self.reportSpecResults = function(spec){
-    var fullName = spec.getFullName();
-    var desc = spec.description;
     var results = spec.results();
     var passed = results.passed();
-    var skipped = results.skipped;
-    var resultItems = results.getItems();
-    var resultData = [];
-    for(var i=0;i<resultItems.length;i++){
-      var result = resultItems[i];
-      resultData.push(convertResultData(result));
-    }
-    sendReport({
-      stage: 'spec_complete',
-      data: {
-        fullName: fullName,
-        desc: desc,
-        passed: passed,
-        skipped: skipped,
-        results: resultData
+    if(!passed){
+      var fullName = spec.getFullName();
+      var desc = spec.description;
+      var resultItems = results.getItems();
+      var resultData = [];
+      for(var i=0;i<resultItems.length;i++){
+        var result = resultItems[i];
+        resultData.push(convertResultData(result));
       }
-    });
+      sendReport({
+        stage: 'spec_failed',
+        data: {
+          fullName: fullName,
+          desc: desc,
+          passed: passed,
+          skipped: skipped,
+          results: resultData
+        }
+      });
+    }
   };
 
   function convertResultData(result){
-    var ret = {};
-    ret.type = result.type;
-    ret.passed = result.passed;
-    ret.passedFunc = result.passed();
-    ret.message = result.message;
-    if(result.trace && result.trace.stack){
-      ret.stackTrace = result.trace.stack;
+    if(result.type == 'expect' && result.passed && !result.passed()){
+      var ret = {};
+      ret.type = result.type;
+      ret.passed = false;
+      ret.message = result.message;
+      if(result.trace && result.trace.stack){
+        ret.stackTrace = result.trace.stack;
+      }
     }
     return ret;
   }
