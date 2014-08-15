@@ -20,8 +20,13 @@ jasmine.FHReporter = function(){
   var limit = 10;
   var totalSpecs;
   var specCounter=0;
+  var order = 0;
+  var failedSpecs=0;
+  var passedSpecs=0;
+  var skippedSpecs=0;
 
   function sendReport(testData, force){
+    testData.order = order++;
     testData.ts = new Date().getTime();
     testData.progress = {
       total: totalSpecs,
@@ -67,7 +72,8 @@ jasmine.FHReporter = function(){
   };
 
   self.reportRunnerResults = function(runner){
-    var results = suite.results();
+    self.log('Runner completed');
+    var results = runner.results();
     var passed = results.passed();
     var totalCount = results.totalCount;
     var passedCount = results.passedCount;
@@ -75,9 +81,13 @@ jasmine.FHReporter = function(){
     sendReport({
       stage: 'complete',
       data: {
-        'total': totalCount,
-        'passedCount': passedCount,
-        'failedCount': failedCount,
+        'total_specs': totalSpecs,
+        'passed_specs': passedSpecs,
+        'skipped_specs': skippedSpecs,
+        'failed_specs': failedSpecs,
+        'total_asserts': totalCount,
+        'passed_asserts': passedCount,
+        'failed_asserts': failedCount,
         'passed': passed
       }
     }, true);
@@ -113,7 +123,11 @@ jasmine.FHReporter = function(){
   self.reportSpecResults = function(spec){
     var results = spec.results();
     var passed = results.passed();
+    if(results.skipped){
+      skippedSpecs++;
+    }
     if(!passed){
+      failedSpecs++;
       var fullName = spec.getFullName();
       var desc = spec.description;
       var resultItems = results.getItems();
@@ -128,10 +142,11 @@ jasmine.FHReporter = function(){
           fullName: fullName,
           desc: desc,
           passed: passed,
-          skipped: skipped,
           results: resultData
         }
       });
+    } else {
+      passedSpecs++;
     }
   };
 
