@@ -24,6 +24,7 @@ jasmine.FHReporter = function(){
   var failedSpecs=0;
   var passedSpecs=0;
   var skippedSpecs=0;
+  var suitesMap = {};
 
   function sendReport(testData, force){
     testData.order = order++;
@@ -111,7 +112,9 @@ jasmine.FHReporter = function(){
         totalCount: totalCount,
         passedCount: passedCount,
         failedCount: failedCount,
-        skipped : skipped
+        skipped : skipped,
+        parents: getSuiteParents(suite),
+        specs: suitesMap[suiteId]
       }
     });
   };
@@ -128,25 +131,29 @@ jasmine.FHReporter = function(){
     }
     if(!passed){
       failedSpecs++;
-      var fullName = spec.getFullName();
-      var desc = spec.description;
-      var resultItems = results.getItems();
-      var resultData = [];
-      for(var i=0;i<resultItems.length;i++){
-        var result = resultItems[i];
-        resultData.push(convertResultData(result));
-      }
-      sendReport({
-        stage: 'spec_failed',
-        data: {
-          fullName: fullName,
-          desc: desc,
-          passed: passed,
-          results: resultData
-        }
-      });
     } else {
       passedSpecs++;
+    }
+
+    var suiteId = spec.suite.id;
+    if(!suitesMap[suiteId]){
+      suitesMap[suiteId] = {};
+    }
+
+    var fullName = spec.getFullName();
+    var desc = spec.description;
+    var resultItems = results.getItems();
+    var resultData = [];
+    for(var i=0;i<resultItems.length;i++){
+      var result = resultItems[i];
+      resultData.push(convertResultData(result));
+    }
+
+    suitesMap[suiteId][spec.id] = {
+      fullName: fullName,
+      desc: desc,
+      passed: passed
+      resultData: resultData,
     }
   };
 
@@ -161,5 +168,15 @@ jasmine.FHReporter = function(){
       }
     }
     return ret;
+  }
+
+  function getSuiteParents(suite){
+    var parents = [];
+    if(suite.parentSuite){
+      for(var parentSuite = suite; parentSuite; parentSuite = parentSuite.parentSuite){
+        parents.push(parentSuite.id);
+      }
+    }
+    return parents;
   }
 }
