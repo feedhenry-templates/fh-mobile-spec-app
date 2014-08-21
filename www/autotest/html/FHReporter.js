@@ -144,9 +144,11 @@ jasmine.FHReporter = function(){
     var desc = spec.description;
     var resultItems = results.getItems();
     var resultData = [];
-    for(var i=0;i<resultItems.length;i++){
-      var result = resultItems[i];
-      resultData.push(convertResultData(result));
+    if(!passed){
+      for(var i=0;i<resultItems.length;i++){
+        var result = resultItems[i];
+        resultData.push(convertResultData(result));
+      }
     }
 
     suitesMap[suiteId][spec.id] = {
@@ -173,7 +175,7 @@ jasmine.FHReporter = function(){
   function getSuiteParents(suite){
     var parents = [];
     if(suite.parentSuite){
-      for(var parentSuite = suite; parentSuite; parentSuite = parentSuite.parentSuite){
+      for(var parentSuite = suite.parentSuite; parentSuite; parentSuite = parentSuite.parentSuite){
         parents.push(parentSuite.id);
       }
     }
