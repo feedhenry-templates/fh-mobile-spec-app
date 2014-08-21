@@ -12,4 +12,4 @@ Build the app using fh-digger and install it on the device. Either run the autot
 
 - [ ] Get all the tests passing on all devices (iOS, Android & WP8 for now)
 - [ ] Automate the build -> install -> run process.
-- [ ] Integrate with JS SDK and post the test results to the cloud code.
+- [x] Integrate with JS SDK and post the test results to the cloud code.
