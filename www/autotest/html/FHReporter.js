@@ -152,8 +152,8 @@ jasmine.FHReporter = function(){
     suitesMap[suiteId][spec.id] = {
       fullName: fullName,
       desc: desc,
-      passed: passed
-      resultData: resultData,
+      passed: passed,
+      resultData: resultData
     }
   };
 
