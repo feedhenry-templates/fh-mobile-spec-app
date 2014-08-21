@@ -108,6 +108,7 @@ jasmine.FHReporter = function(){
       data: {
         suiteId: suiteId,
         name: fullName,
+        desc: suite.description,
         passed: passed,
         totalCount: totalCount,
         passedCount: passedCount,
