@@ -42,7 +42,7 @@ jasmine.FHReporter = function(){
       reqData.testInfo = dataToSend;
       fh.cloud({
         path: '/recordTest',
-        type: 'POST',
+        method: 'POST',
         contentType: 'application/json',
         data: reqData
       }, function(res){
