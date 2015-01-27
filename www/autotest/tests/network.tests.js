@@ -33,7 +33,8 @@ describe('Network (navigator.connection)', function () {
             '2g': 1,
             '3g': 1,
             '4g': 1,
-            'none': 1
+            'none': 1,
+            'cellular': 1
         };
         expect(validValues[navigator.connection.type]).toBe(1);
     });
