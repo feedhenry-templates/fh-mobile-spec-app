@@ -39,26 +39,26 @@
       vertical-align: top;
       border: 1px solid gray;
     }
-    
+
     .highlight-w {
         color: white;
     }
-    
+
     #stage.theme .small{
         width:50px;
         padding:1.2em 0;
     }
-    
+
     input[type=text] {
         width: 70%;
         height: 30px;
     }
-    
+
     .btn-dismiss {
         width: 20%;
         height: 30px;
     }
-    
+
     #error {
         color: red;
     }
@@ -67,13 +67,13 @@
     <script>
         window.onerror = function(err,fn,ln) {alert("ERROR:" + err + ", " + fn + ":" + ln);};
     </script>
-    <script type="text/javascript" charset="utf-8" src="../cordova-incl.js"></script>      
-    
+    <script type="text/javascript" charset="utf-8" src="../browserify.js"></script>
+
     <script type="text/javascript" charset="utf-8">
 
     var deviceReady = false;
     var keyboardPlugin = null;
-    
+
     /**
      * Function called when page has finished loading.
      */
@@ -81,7 +81,7 @@
         document.addEventListener("deviceready", function() {
                 deviceReady = true;
                 keyboardPlugin = window.Keyboard; // for now, before plugin re-factor
-                                  
+
                 if (keyboardPlugin == null) {
                     var msg = 'The plugin org.apache.cordova.keyboard was not found. Check that you have it installed.';
                     alert(msg);
@@ -95,12 +95,12 @@
         	}
         },1000);
     }
-    
+
     function setShrinkView_hideFormAccessoryBar_andDisableScrollingInShrinkView(shrinkView, hideFormAccessoryBar, disableScrollingInShrinkView)
     {
         keyboardPlugin.shrinkView(shrinkView);
         document.getElementById("shrinkView-arg").innerHTML = shrinkView;
-        
+
         keyboardPlugin.hideFormAccessoryBar(hideFormAccessoryBar);
         document.getElementById("hideFormAccessoryBar-arg").innerHTML = hideFormAccessoryBar;
 
@@ -111,7 +111,7 @@
     </script>
   </head>
   <body onload="init();" id="stage" class="theme">
-  
+
     <h1>Keyboard (iOS)</h1>
 
     <br />
@@ -122,7 +122,7 @@
     <h1>isVisible</h1>
     <br />
     <div class="btn large" onclick="alert('Keyboard.isVisible: ' + Keyboard.isVisible);">Keyboard.isVisible</div>
-    
+
     <h1>API Tests</h1>
     <br />
     <div>
@@ -212,6 +212,6 @@
     </div>
     <br />
     <div class="backBtn" onclick="backHome();">Back</div>
-    
+
   </body>
 </html>
