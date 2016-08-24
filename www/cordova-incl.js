@@ -19,8 +19,7 @@
  *
 */
 
-var PLAT;
-(function getPlatform() {
+function getPlatform() {
     var platforms = {
         amazon_fireos: /cordova-amazon-fireos/,
         android: /Android/,
@@ -32,21 +31,19 @@ var PLAT;
     };
     for (var key in platforms) {
         if (platforms[key].exec(navigator.userAgent)) {
-            PLAT = key;
-            break;
+            return key;
         }
     }
-})();
+}
 
 var scripts = document.getElementsByTagName('script');
 var currentPath = scripts[scripts.length - 1].src;
-var cordovaPath = currentPath.replace("cordova-incl.js", "cordova.js");
-var fhjs = currentPath.replace("cordova-incl.js", "feedhenry.js");
+var cordovaPath = currentPath.replace("browserify.js", "cordova.js");
 
 if (!window._doNotWriteCordovaScript) {
-    if (PLAT != "windows8") {
+    if (getPlatform() !== "windows8") {
         document.write('<script type="text/javascript" charset="utf-8" src="' + cordovaPath + '"></script>');
-        document.write('<script type="text/javascript" charset="utf-8" src="' + fhjs + '"></script>');
+        window.$fh = require('fh-js-sdk');
     } else {
         var s = document.createElement('script');
         s.src = cordovaPath;
@@ -54,14 +51,14 @@ if (!window._doNotWriteCordovaScript) {
     }
 }
 
-function backHome() {
+window.backHome =  function() {
     if (window.device && device.platform && (device.platform.toLowerCase() == 'android' || device.platform.toLowerCase() == 'amazon-fireos')) {
         navigator.app.backHistory();
     }
     else {
         window.history.go(-1);
     }
-}
+};
 
 window.$fh = window.$fh || {};
 window.$fh.__dest__ = window.$fh.__dest__ || {};

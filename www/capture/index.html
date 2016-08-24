@@ -27,7 +27,7 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"> <!-- ISO-8859-1 -->
     <title>Cordova Mobile Spec</title>
     <link rel="stylesheet" href="../master.css" type="text/css" media="screen" title="no title" charset="utf-8">
-    <script type="text/javascript" charset="utf-8" src="../cordova-incl.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../browserify.js"></script>
 
 
 <script type="text/javascript" charset="utf-8">
@@ -49,39 +49,39 @@
         var path = mediaFiles[0].fullPath;
         log('Audio captured: ' + path);
         var m = new Media(path);
-        m.play(); 
+        m.play();
     }
-    
+
     function captureAudioFail(e){
         log('Error getting audio: ' + e.code);
     }
-    
+
     function getAudio(){
         clearStatus();
         var options = { limit: 1, duration: 10};
         navigator.device.capture.captureAudio(captureAudioWin, captureAudioFail, options);
     }
-    
+
     function captureImageWin(mediaFiles){
         var path = mediaFiles[0].fullPath;
-        log('Image captured: ' + path);    
-        document.getElementById('camera_image').src = path;    
+        log('Image captured: ' + path);
+        document.getElementById('camera_image').src = path;
     }
-    
+
     function captureImageFail(e){
         log('Error getting image: ' + e.code);
     }
-    
+
     function getImage(){
         clearStatus();
         var options = { limit: 1 };
-        navigator.device.capture.captureImage(captureImageWin, captureImageFail, options);    
-    }    
-    
+        navigator.device.capture.captureImage(captureImageWin, captureImageFail, options);
+    }
+
     function captureVideoWin(mediaFiles){
         var path = mediaFiles[0].fullPath;
         log('Video captured: ' + path);
-        
+
         // need to inject the video element into the html
         // doesn't seem to work if you have a pre-existing video element and
         // add in a source tag
@@ -93,19 +93,19 @@
         source_vid.id = "theSource";
         source_vid.src = path;
         vid.appendChild(source_vid);
-        document.getElementById('video_container').appendChild(vid);    
+        document.getElementById('video_container').appendChild(vid);
     }
-    
+
     function captureVideoFail(e){
         log('Error getting video: ' + e.code);
     }
-    
+
     function getVideo(){
         clearStatus();
         var options = { limit: 1, duration: 10 };
-        navigator.device.capture.captureVideo(captureVideoWin, captureVideoFail, options);      
+        navigator.device.capture.captureVideo(captureVideoWin, captureVideoFail, options);
     }
-    
+
     function clearStatus() {
         document.getElementById('camera_status').innerHTML = '';
         document.getElementById('camera_image').src = 'about:blank';
@@ -125,7 +125,7 @@
             }
         },1000);
     };
-    
+
 </script>
 
   </head>
@@ -137,7 +137,7 @@
         img: <img width="100" id="camera_image">
         video: <div id="video_container"></div>
     </div>
-    
+
     <h2>Cordova Capture API</h2>
     <div id="image-options"></div>
 

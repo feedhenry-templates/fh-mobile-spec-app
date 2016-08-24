@@ -27,7 +27,7 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"> <!-- ISO-8859-1 -->
     <title>Cordova Mobile Spec</title>
     <link rel="stylesheet" href="../master.css" type="text/css" media="screen" title="no title" charset="utf-8">
-    <script type="text/javascript" charset="utf-8" src="../cordova-incl.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../browserify.js"></script>
 
 
 <script type="text/javascript" charset="utf-8">
@@ -38,7 +38,7 @@
     var fileObj = null;
     var fileEntry = null;
     var pageStartTime = +new Date();
-    
+
     //default camera options
     var camQualityDefault = ['quality value', 50];
     var camDestinationTypeDefault = ['FILE_URI', 1];
@@ -48,7 +48,7 @@
     var camMediaTypeDefault = ['mediaType', 0];
     var camCorrectOrientationDefault = ['correctOrientation', false];
     var camSaveToPhotoAlbumDefault = ['saveToPhotoAlbum', true];
-    
+
 
     //-------------------------------------------------------------------------
     // Camera
@@ -77,8 +77,8 @@
 		} catch (e) {
 			// not DATA_URL
 		    log('URL: ' + url.slice(0, 100));
-		}    
-    
+		}
+
         pictureUrl = url;
         var img = document.getElementById('camera_image');
         var startTime = new Date();
@@ -303,7 +303,7 @@
         var select = document.createElement('select');
         select.keyName = name;
         container.appendChild(select);
-        
+
         // if we didn't get a default value, insert the blank <default> entry
         if (selectionDefault == undefined) {
             var opt = document.createElement('option');
@@ -311,12 +311,12 @@
             opt.text = '<default>';
             select.appendChild(opt);
         }
-        
+
         select.isBool = typeof values == 'boolean';
         if (select.isBool) {
             values = {'true': 1, 'false': 0};
         }
-        
+
         for (var k in values) {
             var opt = document.createElement('option');
             opt.value = values[k];
@@ -350,7 +350,7 @@
             createOptionsEl('correctOrientation', true, camCorrectOrientationDefault);
             createOptionsEl('saveToPhotoAlbum', true, camSaveToPhotoAlbumDefault);
             createOptionsEl('cameraDirection', Camera.Direction);
-                          
+
         }, false);
         window.setTimeout(function() {
             if (!deviceReady) {

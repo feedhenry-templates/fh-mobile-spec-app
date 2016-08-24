@@ -27,9 +27,9 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"> <!-- ISO-8859-1 -->
     <title>Cordova Audio Tests</title>
     <link rel="stylesheet" href="../master.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
-    <script type="text/javascript" charset="utf-8" src="../cordova-incl.js"></script>      
+    <script type="text/javascript" charset="utf-8" src="../browserify.js"></script>
 
-      
+
 <script type="text/javascript" charset="utf-8">
 
 	 var defaultaudio = "http://cordova.apache.org/downloads/BlueZedEx.mp3";
@@ -51,7 +51,7 @@
         console.log(" -- media="+media1);
 
 	    var src = defaultaudio;
-        
+
         if (url) {
             src = url;
         }
@@ -157,7 +157,7 @@
         clearInterval(media1Timer);
         media1Timer = null;
     }
-    
+
     /**
      * Release audio
      */
@@ -168,7 +168,7 @@
 	    	media1.release();
 	    }
 	}
-	
+
     /**
      * Set audio status
      */
@@ -242,7 +242,7 @@
     function playRecording() {
         playAudio(recordSrc);
     }
-    
+
     /**
      * Function to create a file for iOS recording
      */
@@ -259,7 +259,7 @@
         };
         window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, gotFS, fsFail);
     }
-    
+
     /**
      * Function to create a file for BB recording
      */
@@ -296,7 +296,7 @@
         	}
         },1000);
     }
-    
+
     /**
      * for forced updates of position after a successful seek
      */
@@ -349,12 +349,12 @@
                     }
                 });
         }
-        
+
         media1.getCurrentPosition(
             function (position) {
                 var deltat = time;
                 if (mode == "by") {
-                    deltat = time + position * 1000;   
+                    deltat = time + position * 1000;
                 }
                 media1.seekTo(deltat,
                     function () {
@@ -371,13 +371,13 @@
                 setAudioPosition("Error: "+e);
             });
     }
-    
+
 </script>
 
   </head>
   <body onload="init();" id="stage" class="theme">
-  
-    <h1>Audio</h1>  
+
+    <h1>Audio</h1>
     <div id="info">
         <table width="100%">
         <tr><td><b>Status:</b></td><td id="audio_status"> </td></tr>
@@ -399,7 +399,7 @@
             <td><div class="btn wide" onclick="releaseAudio();">Release</div></td>
         </tr>
     </table>
-    
+
     <table style="width:80%;">
         <tr>
             <td><div class="btn wide" onclick="seekAudio('by');">Seek By</div></td>
@@ -411,7 +411,7 @@
             </td>
         </tr>
     </table>
-    
+
     <table style="width:80%;">
         <tr>
             <th colspan=3><br><br>Record Audio</th>
@@ -425,8 +425,8 @@
             <td><div class="btn wide" onclick="stopAudio();">Stop</div></td>
         </tr>
     </table>
-    
+
     <h2> </h2><div class="backBtn" onclick="backHome();">Back</div>
-    
+
   </body>
-</html>      
+</html>
