@@ -28,8 +28,8 @@
     <title>Lazy-Loading of cordova-incl.js test</title>
     <link rel="stylesheet" href="../master.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
     <script>_doNotWriteCordovaScript = true</script>
-    <script type="text/javascript" charset="utf-8" src="../cordova-incl.js"></script>
-<script type="text/javascript" charset="utf-8">
+    <script type="text/javascript" charset="utf-8" src="../browserify.js"></script>
+    <script type="text/javascript" charset="utf-8">
     function init() {
         document.addEventListener("deviceready", function() {
             console.log("Device="+device.platform+" "+device.version);
